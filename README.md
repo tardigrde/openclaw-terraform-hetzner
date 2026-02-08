@@ -74,7 +74,7 @@ Unlike cloud-based assistants, OpenClaw runs on your own server, giving you comp
 
 ```bash
 # Clone this repo
-git clone https://github.com/yourusername/openclaw-terraform-hetzner.git
+git clone https://github.com/andreesg/openclaw-terraform-hetzner.git
 cd openclaw-terraform-hetzner
 
 # Copy and edit configuration
@@ -241,7 +241,7 @@ This infrastructure repo works with a **config repo** that contains the OpenClaw
 - Deploy scripts
 - Secrets management (`config/inputs.sh`, `secrets/openclaw.env`)
 
-### Config Repo ([openclaw-docker-config](https://github.com/yourusername/openclaw-docker-config))
+### Config Repo ([openclaw-docker-config](https://github.com/andreesg/openclaw-docker-config))
 - `docker/Dockerfile` — Image build
 - `docker/docker-compose.yml` — Service definition
 - `config/openclaw.json` — Runtime configuration
@@ -268,7 +268,7 @@ This infrastructure repo works with a **config repo** that contains the OpenClaw
 
 ```bash
 # 1. Clone and configure
-git clone https://github.com/yourusername/openclaw-terraform-hetzner.git
+git clone https://github.com/andreesg/openclaw-terraform-hetzner.git
 cd openclaw-terraform-hetzner
 
 # 2. Set up infrastructure secrets
@@ -551,7 +551,7 @@ cloud-init status --wait
 
 1. **Check logs**: `make logs` and `make ssh` to investigate
 2. **Destroy and recreate**: `make destroy && make apply && make bootstrap && make deploy`
-3. **Open an issue**: [GitHub Issues](https://github.com/yourusername/openclaw-terraform-hetzner/issues)
+3. **Open an issue**: [GitHub Issues](https://github.com/andreesg/openclaw-terraform-hetzner/issues)
 
 ---
 
@@ -629,7 +629,7 @@ We welcome contributions! Here's how you can help:
 
 ### Ways to Contribute
 
-- 🐛 **Report bugs**: [Open an issue](https://github.com/yourusername/openclaw-terraform-hetzner/issues)
+- 🐛 **Report bugs**: [Open an issue](https://github.com/andreesg/openclaw-terraform-hetzner/issues)
 - 💡 **Suggest features**: Share ideas for improvements
 - 📖 **Improve docs**: Fix typos, add examples, clarify instructions
 - 🔧 **Submit PRs**: Add new features or fix bugs
@@ -693,7 +693,7 @@ git push origin feature/your-feature-name
 ## 🌟 Related Projects
 
 - **[OpenClaw](https://github.com/openclaw)** — The core AI assistant engine
-- **[openclaw-docker-config](https://github.com/yourusername/openclaw-docker-config)** — Docker compose and config for OpenClaw
+- **[openclaw-docker-config](https://github.com/andreesg/openclaw-docker-config)** — Docker compose and config for OpenClaw
 - **[Terraform Hetzner Cloud Provider](https://registry.terraform.io/providers/hetznercloud/hcloud/latest/docs)** — Official provider docs
 
 ---
@@ -713,8 +713,8 @@ You are free to:
 ## 💬 Support
 
 - **Documentation**: This README and [CLAUDE.md](CLAUDE.md)
-- **Issues**: [GitHub Issues](https://github.com/yourusername/openclaw-terraform-hetzner/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/openclaw-terraform-hetzner/discussions)
+- **Issues**: [GitHub Issues](https://github.com/andreesg/openclaw-terraform-hetzner/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/andreesg/openclaw-terraform-hetzner/discussions)
 - **Hetzner Docs**: [Hetzner Cloud Documentation](https://docs.hetzner.com/cloud/)
 - **Terraform Docs**: [Terraform Documentation](https://developer.hashicorp.com/terraform/docs)
 

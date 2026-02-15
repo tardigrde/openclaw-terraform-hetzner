@@ -68,3 +68,26 @@ variable "app_directory" {
   type        = string
   default     = "/home/openclaw/.openclaw"
 }
+
+# ============================================
+# Security Configuration
+# ============================================
+
+variable "ssh_port" {
+  description = "SSH port number (22 for default, 8822 recommended with Tailscale)"
+  type        = number
+  default     = 22
+}
+
+variable "enable_tailscale" {
+  description = "Install and configure Tailscale VPN"
+  type        = bool
+  default     = false
+}
+
+variable "tailscale_auth_key" {
+  description = "Tailscale auth key for automatic registration (optional)"
+  type        = string
+  default     = ""
+  sensitive   = true
+}

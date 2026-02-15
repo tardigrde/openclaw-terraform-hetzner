@@ -73,3 +73,30 @@ variable "cloud_init_user_data" {
   description = "Rendered cloud-init user data content"
   type        = string
 }
+
+# ============================================
+# Security Configuration
+# ============================================
+
+variable "ssh_port" {
+  description = "SSH port number (22 for default, 8822 recommended with Tailscale)"
+  type        = number
+  default     = 22
+  validation {
+    condition     = var.ssh_port >= 1 && var.ssh_port <= 65535
+    error_message = "SSH port must be between 1 and 65535."
+  }
+}
+
+variable "enable_tailscale" {
+  description = "Install and configure Tailscale VPN"
+  type        = bool
+  default     = false
+}
+
+variable "tailscale_auth_key" {
+  description = "Tailscale auth key for automatic registration (optional)"
+  type        = string
+  default     = ""
+  sensitive   = true
+}

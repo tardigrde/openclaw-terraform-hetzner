@@ -19,8 +19,11 @@ set -euo pipefail
 # -----------------------------------------------------------------------------
 
 VPS_USER="openclaw"
-SSH_OPTS="-o StrictHostKeyChecking=accept-new"
 TERRAFORM_DIR="infra/terraform/envs/prod"
+
+# SSH port and options
+SSH_PORT=$(cd "$TERRAFORM_DIR" && terraform output -raw ssh_port 2>/dev/null) || SSH_PORT=22
+SSH_OPTS="-o StrictHostKeyChecking=accept-new -i ~/.ssh/openclaw -p $SSH_PORT"
 
 # -----------------------------------------------------------------------------
 # Get VPS IP

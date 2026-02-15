@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Tailscale VPN Integration**: Optional Tailscale VPN support for secure private networking
+  - New Terraform variables: `enable_tailscale`, `tailscale_auth_key`, `ssh_port`
+  - Automatic Tailscale installation and authentication via cloud-init
+  - UFW firewall rule for Tailscale UDP port (41641)
+  - Dynamic SSH port support throughout all scripts and Makefile
+  - New Makefile targets: `tailscale-status`, `tailscale-ip`, `tailscale-up`
+  - Comprehensive documentation in `docs/TAILSCALE.md`
+  - OpenClaw Tailscale configuration example (`docs/examples/openclaw-tailscale.json`)
+
+### Changed
+- All deploy and helper scripts now support dynamic SSH port detection
+- Makefile commands (`ssh`, `tunnel`, `backup-now`, etc.) use dynamic SSH port
+- Cloud-init template updated with Tailscale installation logic
+- Firewall rules updated to support custom SSH port (default: 22)
+- SSH command outputs now include port number (`ssh -p <port>`)
+- `config/inputs.example.sh` updated with Tailscale and SSH port configuration
+
+### Security
+- Reduced attack surface: SSH and gateway can be accessed via private Tailscale VPN
+- End-to-end WireGuard encryption for all Tailscale traffic
+- Support for custom SSH port to reduce automated attacks (recommended: 8822)
+- Tailscale auth keys stored as sensitive Terraform variables
+- Updated `SECURITY.md` with Tailscale threat model improvements
+
+### Documentation
+- New comprehensive Tailscale integration guide (`docs/TAILSCALE.md`)
+- Updated `README.md` with Tailscale quick start section
+- Enhanced `SECURITY.md` with Tailscale security considerations
+- Added Tailscale configuration example for OpenClaw gateway
+
 ## [1.0.0] - 2025-02-08
 
 ### Added

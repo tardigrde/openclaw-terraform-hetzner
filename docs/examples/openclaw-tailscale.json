@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "agent": "main",
+  "gateway": {
+    "host": "0.0.0.0",
+    "port": 18789,
+    "tailscale": {
+      "mode": "serve",
+      "protocol": "https",
+      "port": 443
+    },
+    "auth": {
+      "token": "${OPENCLAW_GATEWAY_TOKEN}",
+      "allowTailscale": true
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "anthropic/claude-sonnet-4.5-20250929",
+        "extended": "anthropic/claude-opus-4.6-20250929"
+      },
+      "system": {
+        "workspace": "/workspace"
+      }
+    },
+    "main": {
+      "model": {
+        "primary": "anthropic/claude-sonnet-4.5-20250929"
+      }
+    }
+  },
+  "auth": {
+    "profiles": {
+      "anthropic:main": {
+        "provider": "anthropic",
+        "mode": "subscription"
+      }
+    }
+  },
+  "telegram": {
+    "enabled": true,
+    "botToken": "${TELEGRAM_BOT_TOKEN}",
+    "agent": "main"
+  }
+}

@@ -137,6 +137,13 @@ make backup-now # Trigger backup immediately
 make restore    # Restore from backup (BACKUP=filename)
 ```
 
+**Tailscale:**
+```bash
+make tailscale-status  # Check Tailscale VPN status
+make tailscale-ip      # Get Tailscale IP address
+make tailscale-up      # Manually authenticate Tailscale
+```
+
 **Configuration:**
 ```bash
 make push-env    # Push environment variables
@@ -171,6 +178,59 @@ Then apply:
 ```bash
 source config/inputs.sh && make plan && make apply
 ```
+
+### Tailscale VPN (Optional)
+
+For enhanced security, deploy OpenClaw with Tailscale VPN to create a private, encrypted mesh network between your devices and the VPS.
+
+**Benefits:**
+- SSH and gateway access via private VPN (not exposed to public internet)
+- End-to-end encrypted connections using WireGuard
+- Automatic HTTPS for OpenClaw gateway via Tailscale Serve
+- Works across networks (WiFi, mobile, VPN changes)
+
+**Quick Setup:**
+
+1. **Get a Tailscale auth key** (optional for auto-setup):
+   - Visit [login.tailscale.com/admin/settings/keys](https://login.tailscale.com/admin/settings/keys)
+   - Generate a reusable, pre-authorized key
+
+2. **Enable in `config/inputs.sh`**:
+   ```bash
+   export TF_VAR_enable_tailscale=true
+   export TF_VAR_tailscale_auth_key="tskey-auth-xxxxxxxxxxxxx"
+   export TF_VAR_ssh_port=8822  # Optional: custom SSH port
+   ```
+
+3. **Deploy**:
+   ```bash
+   source config/inputs.sh
+   make plan && make apply
+   ```
+
+4. **Verify**:
+   ```bash
+   make tailscale-status  # Check VPN status
+   make tailscale-ip      # Get Tailscale IP
+   ```
+
+5. **Connect via Tailscale**:
+   ```bash
+   # SSH via Tailscale
+   ssh -p 8822 openclaw@$(make tailscale-ip)
+
+   # Access gateway at: https://openclaw-prod.your-tailnet.ts.net
+   # (Configure OpenClaw with gateway.tailscale.mode: "serve")
+   ```
+
+**Tailscale Commands:**
+```bash
+make tailscale-status  # Check Tailscale status
+make tailscale-ip      # Get Tailscale IP
+make tailscale-up      # Manually authenticate (if no auth key provided)
+```
+
+For detailed configuration, see [docs/TAILSCALE.md](docs/TAILSCALE.md).
 
 ### Remote State Backend
 
@@ -399,8 +459,10 @@ cat ~/.openclaw/agents/main/agent/auth-profiles.json
 
 - Default allows SSH from anywhere (`0.0.0.0/0`)
 - **Recommended:** Restrict to your IP in `config/inputs.sh`
+- **Better:** Use Tailscale VPN for private SSH access (see [Tailscale section](#tailscale-vpn-optional))
 - Use SSH keys, not passwords
 - Rotate keys regularly
+- Consider custom SSH port (`TF_VAR_ssh_port=8822`) to reduce automated attacks
 
 ### Secrets Management
 
@@ -414,6 +476,8 @@ cat ~/.openclaw/agents/main/agent/auth-profiles.json
 - Default configuration: SSH only
 - Gateway binds to `127.0.0.1` (localhost)
 - Access via SSH tunnel, not direct exposure
+- **Recommended:** Enable Tailscale VPN for private networking
+- With Tailscale: Gateway accessible at `https://openclaw-prod.your-tailnet.ts.net` (private HTTPS)
 - Review `infra/terraform/modules/hetzner-vps/main.tf` for firewall rules
 
 ### API Keys

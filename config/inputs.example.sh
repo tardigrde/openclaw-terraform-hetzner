@@ -67,6 +67,26 @@ export GHCR_TOKEN="CHANGE_ME_your-github-pat-with-read-packages-scope"
 export CLAUDE_SETUP_TOKEN=""
 
 # ============================================
+# OPTIONAL: Tailscale VPN
+# ============================================
+# Enable Tailscale for private networking
+# Recommended for production deployments
+export TF_VAR_enable_tailscale=false
+
+# Tailscale auth key (generate at https://login.tailscale.com/admin/settings/keys)
+# Leave empty to authenticate manually via SSH after deployment
+# Recommended: Use a reusable, non-ephemeral key for easier re-deployment
+export TF_VAR_tailscale_auth_key=""
+
+# ============================================
+# OPTIONAL: Custom SSH Port
+# ============================================
+# Recommended with Tailscale: 8822 (reduces public exposure)
+# Default: 22 (standard SSH port)
+# Note: After changing the port, update your SSH config or use: ssh -p <port>
+export TF_VAR_ssh_port=22
+
+# ============================================
 # Server Configuration (Optional Overrides)
 # ============================================
 # export TF_VAR_server_type="cx23"

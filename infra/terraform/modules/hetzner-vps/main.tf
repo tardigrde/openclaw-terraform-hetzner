@@ -30,14 +30,25 @@ data "hcloud_ssh_key" "main" {
 resource "hcloud_firewall" "main" {
   name = "${var.project_name}-${var.environment}-firewall"
 
-  # Allow SSH from specified CIDRs
+  # Allow SSH from specified CIDRs (dynamic port)
   dynamic "rule" {
     for_each = var.ssh_allowed_cidrs
     content {
       direction  = "in"
       protocol   = "tcp"
-      port       = "22"
+      port       = tostring(var.ssh_port)
       source_ips = [rule.value]
+    }
+  }
+
+  # Allow Tailscale UDP (if enabled)
+  dynamic "rule" {
+    for_each = var.enable_tailscale ? [1] : []
+    content {
+      direction  = "in"
+      protocol   = "udp"
+      port       = "41641"
+      source_ips = ["0.0.0.0/0", "::/0"]
     }
   }
 

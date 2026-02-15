@@ -70,12 +70,35 @@ runcmd:
   # Add user to docker group
   - usermod -aG docker ${app_user}
 
+%{ if enable_tailscale ~}
+  # -----------------------------------------------------------------------------
+  # Install Tailscale VPN
+  # -----------------------------------------------------------------------------
+  - curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/$(lsb_release -cs).noarmor.gpg | tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
+  - curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/$(lsb_release -cs).list | tee /etc/apt/sources.list.d/tailscale.list >/dev/null
+  - apt-get update
+  - apt-get install -y tailscale
+  - systemctl enable tailscaled
+  - systemctl start tailscaled
+
+%{ if tailscale_auth_key != "" ~}
+  # Authenticate Tailscale automatically
+  - tailscale up --auth-key="${tailscale_auth_key}" --hostname="openclaw-prod" --accept-routes
+%{ else ~}
+  # Tailscale installed but not authenticated - run manually: sudo tailscale up
+  - echo "[Tailscale] Auth key not provided. Run manually: sudo tailscale up"
+%{ endif ~}
+%{ endif ~}
+
   # -----------------------------------------------------------------------------
   # Configure UFW Firewall
   # -----------------------------------------------------------------------------
   - ufw default deny incoming
   - ufw default allow outgoing
-  - ufw allow ssh
+  - ufw allow ${ssh_port}/tcp comment 'SSH'
+%{ if enable_tailscale ~}
+  - ufw allow 41641/udp comment 'Tailscale'
+%{ endif ~}
   - ufw --force enable
 
   # -----------------------------------------------------------------------------

@@ -28,11 +28,12 @@ GHCR_TOKEN="${GHCR_TOKEN:-}"
 # VPS user
 VPS_USER="openclaw"
 
-# SSH options
-SSH_OPTS="-o StrictHostKeyChecking=accept-new"
-
 # Terraform directory (relative to repo root)
 TERRAFORM_DIR="infra/terraform/envs/prod"
+
+# SSH port and options
+SSH_PORT=$(cd "$TERRAFORM_DIR" && terraform output -raw ssh_port 2>/dev/null) || SSH_PORT=22
+SSH_OPTS="-o StrictHostKeyChecking=accept-new -i ~/.ssh/openclaw -p $SSH_PORT"
 
 # -----------------------------------------------------------------------------
 # Validate CONFIG_DIR

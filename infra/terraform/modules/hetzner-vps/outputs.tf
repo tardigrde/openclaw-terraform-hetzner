@@ -47,10 +47,24 @@ output "firewall_id" {
 
 output "ssh_command" {
   description = "SSH command to connect as the application user"
-  value       = "ssh ${var.app_user}@${hcloud_server.main.ipv4_address}"
+  value       = "ssh -p ${var.ssh_port} ${var.app_user}@${hcloud_server.main.ipv4_address}"
 }
 
 output "ssh_command_root" {
   description = "SSH command to connect as root"
-  value       = "ssh root@${hcloud_server.main.ipv4_address}"
+  value       = "ssh -p ${var.ssh_port} root@${hcloud_server.main.ipv4_address}"
+}
+
+# ============================================
+# Security Outputs
+# ============================================
+
+output "ssh_port" {
+  description = "The SSH port number"
+  value       = var.ssh_port
+}
+
+output "tailscale_enabled" {
+  description = "Whether Tailscale is enabled"
+  value       = var.enable_tailscale
 }

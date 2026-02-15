@@ -77,14 +77,16 @@ echo ""
 
 echo "[...] Pushing config files to VPS..."
 
-ssh $SSH_OPTS "$VPS_USER@$VPS_IP" "mkdir -p $REMOTE_CONFIG_DIR"
+ssh $SSH_OPTS "$VPS_USER@$VPS_IP" "mkdir -p $REMOTE_CONFIG_DIR && chmod 700 $REMOTE_CONFIG_DIR"
 
 FILE_COUNT=0
 for file in "$CONFIG_DIR"/config/*; do
     if [[ -f "$file" ]]; then
         filename=$(basename "$file")
         scp $SSH_OPTS "$file" "$VPS_USER@$VPS_IP:$REMOTE_CONFIG_DIR/$filename"
-        echo "[OK] Pushed $filename"
+        # Set secure permissions on config files
+        ssh $SSH_OPTS "$VPS_USER@$VPS_IP" "chmod 600 $REMOTE_CONFIG_DIR/$filename"
+        echo "[OK] Pushed $filename (chmod 600)"
         FILE_COUNT=$((FILE_COUNT + 1))
     fi
 done

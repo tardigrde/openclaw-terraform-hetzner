@@ -123,7 +123,12 @@ mkdir -p "$HOME/.openclaw/workspace"
 mkdir -p "$HOME/backups"
 mkdir -p "$HOME/scripts"
 
+# Set secure permissions on OpenClaw state directory
+chmod 700 "$HOME/.openclaw"
+chmod 700 "$HOME/.openclaw/workspace"
+
 echo "[OK] Created ~/openclaw, ~/.openclaw, ~/backups, ~/scripts"
+echo "[OK] Set secure permissions (700) on ~/.openclaw"
 REMOTE_SCRIPT
 
 # -----------------------------------------------------------------------------

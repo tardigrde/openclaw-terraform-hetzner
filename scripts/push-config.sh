@@ -77,7 +77,7 @@ echo ""
 
 echo "[...] Pushing config files to VPS..."
 
-ssh $SSH_OPTS "$VPS_USER@$VPS_IP" "mkdir -p $REMOTE_CONFIG_DIR"
+ssh $SSH_OPTS "$VPS_USER@$VPS_IP" "mkdir -p $REMOTE_CONFIG_DIR && chmod 700 $REMOTE_CONFIG_DIR"
 
 FILE_COUNT=0
 for file in "$CONFIG_DIR"/config/*; do
@@ -93,6 +93,9 @@ if [[ $FILE_COUNT -eq 0 ]]; then
     echo "[SKIP] No config files found in $CONFIG_DIR/config/"
     exit 0
 fi
+
+# Set secure permissions on all config files
+ssh $SSH_OPTS "$VPS_USER@$VPS_IP" "chmod 600 $REMOTE_CONFIG_DIR/*"
 
 echo ""
 echo "[OK] Pushed $FILE_COUNT config file(s)"

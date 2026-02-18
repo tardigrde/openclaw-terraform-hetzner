@@ -347,6 +347,17 @@ make ssh-root
 ufw status
 ```
 
+### Permission Denied on ~/.openclaw
+
+If you see `Permission denied` when creating directories under `~/.openclaw` (e.g. during `make setup-auth`), Docker likely took ownership of the directory via the volume mount. This can happen if you ran `make deploy` before bootstrap finished, or if you're re-running bootstrap after a previous deploy.
+
+**Fix:**
+```bash
+ssh openclaw@VPS_IP "sudo chown -R openclaw:openclaw ~/.openclaw"
+```
+
+Then re-run `make bootstrap` or `make setup-auth`.
+
 ### Bootstrap Fails
 
 **Verify prerequisites:**

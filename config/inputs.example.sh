@@ -38,6 +38,8 @@ export AWS_SECRET_ACCESS_KEY="$S3_SECRET_KEY"
 # ============================================
 # Allowed CIDRs for SSH access (use YOUR_IP/32 for single IPs)
 # Find your IP: curl -s ifconfig.me
+# After confirming Tailscale SSH works, set this to '[]' and set SERVER_IP="openclaw-prod"
+# below, then re-run: make apply
 export TF_VAR_ssh_allowed_cidrs='["0.0.0.0/0"]'
 
 # Fingerprint of your existing Hetzner SSH key (avoids recreating shared keys)
@@ -48,6 +50,15 @@ export TF_VAR_ssh_key_fingerprint="CHANGE_ME_your-ssh-key-fingerprint"
 # Used by all deploy and helper scripts for SSH connections
 # Set this if you use a different key name or location
 # export SSH_KEY="$HOME/.ssh/id_rsa"
+
+# ============================================
+# SERVER CONNECTION
+# ============================================
+# When using Tailscale (ssh_allowed_cidrs='[]'), scripts can't reach the public
+# IP. Set SERVER_IP to the Tailscale MagicDNS hostname — stable across rebuilds
+# because cloud-init always registers the node as 'openclaw-prod'.
+# Leave empty to auto-detect from terraform output (only works with public SSH).
+# export SERVER_IP=""
 
 # ============================================
 # REQUIRED: Config Directory

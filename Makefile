@@ -17,6 +17,7 @@ ENV ?= prod
 TERRAFORM_DIR := infra/terraform/envs/$(ENV)
 
 # Server IP - read from Terraform state
+# NoteIf using Tailscale, set SERVER_IP="openclaw-prod" in config/inputs.sh.
 SERVER_IP ?= $(shell cd $(TERRAFORM_DIR) && terraform output -raw server_ip 2>/dev/null)
 SSH_KEY ?= ~/.ssh/id_rsa
 
@@ -179,8 +180,8 @@ help: ## Show this help message
 	@echo -e "  $(BLUE)bootstrap$(NC)       Bootstrap OpenClaw on the VPS (run once)"
 	@echo -e "  $(BLUE)deploy$(NC)          Pull latest image and restart container"
 	@echo -e "  $(BLUE)push-env$(NC)        Push secrets/openclaw.env to the VPS"
-	@echo -e "  $(BLUE)push-config$(NC)      Push config files to the VPS"
-	@echo -e "  $(BLUE)setup-auth$(NC)       Set up Claude subscription auth"
+	@echo -e "  $(BLUE)push-config$(NC)     Push config files to the VPS"
+	@echo -e "  $(BLUE)setup-auth$(NC)      Set up Claude subscription auth"
 	@echo ""
 	@echo -e "$(BOLD)Operations:$(NC)"
 	@echo -e "  $(GREEN)ssh$(NC)             SSH as openclaw user"

@@ -49,7 +49,7 @@ Required variables in `config/inputs.sh`:
 - `HCLOUD_TOKEN` - Hetzner Cloud API token
 - `TF_VAR_ssh_key_fingerprint` - SSH key fingerprint from Hetzner
 - `CONFIG_DIR` - Path to your openclaw-docker-config repository
-- `SERVER_IP` - Address scripts use to SSH into the VPS. Set to `openclaw-prod` when using Tailscale (MagicDNS hostname, stable across rebuilds). Leave unset to auto-detect from Terraform output (only works when public SSH is open).
+- `SERVER_IP` - Address that scripts use to SSH into the VPS. Set to `openclaw-prod` when using Tailscale (MagicDNS hostname, stable across rebuilds). Leave unset to auto-detect from Terraform output (only works when public SSH is open).
 
 > **Tailscale (optional, recommended):** Set `TF_VAR_enable_tailscale=true` and `TF_VAR_tailscale_auth_key` to install Tailscale automatically on first boot — it lets you remove SSH from the public internet entirely. See [Firewall Rules](#firewall-rules).
 
@@ -183,7 +183,11 @@ By default SSH (port 22) is open to `0.0.0.0/0`. Restrict this before going to p
 **Option A — Restrict to your IP:**
 ```bash
 # In config/inputs.sh
-export TF_VAR_ssh_allowed_cidrs='["YOUR_IP/32"]'  # curl -s ifconfig.me
+export TF_VAR_ssh_allowed_cidrs='["203.0.113.50/32"]'
+```
+
+Then apply:
+```bash
 source config/inputs.sh && make plan && make apply
 ```
 
@@ -191,7 +195,7 @@ source config/inputs.sh && make plan && make apply
 
 Tailscale creates a private WireGuard mesh so SSH is reachable only from devices on your tailnet — the public IP has no open SSH port.
 
-1. Get an auth key at [login.tailscale.com/admin/settings/keys](https://login.tailscale.com/admin/settings/keys) — use **reusable + pre-authorized**, not ephemeral.
+1. Get an auth key at [login.tailscale.com/admin/settings/keys](https://login.tailscale.com/admin/settings/keys) — use **reusable + pre-authorized** keys, not ephemeral.
 
    > **Auth key expiry:** Reusable Tailscale auth keys expire after 90 days by default.
    > Generate a fresh key at login.tailscale.com/admin/settings/keys
@@ -219,6 +223,8 @@ Tailscale creates a private WireGuard mesh so SSH is reachable only from devices
    source config/inputs.sh && make plan && make apply
    ```
 
+   > **Make sure to always source `config/inputs.sh` before running `make` commands so the updated `SERVER_IP` is used.**
+
 5. **Update `openclaw.json`** in your openclaw-docker-config repo to enable Tailscale-based gateway auth:
    ```json
    {
@@ -238,11 +244,12 @@ Tailscale creates a private WireGuard mesh so SSH is reachable only from devices
    ```
 
    > `allowTailscale` authenticates dashboard users via Tailscale identity headers.
-   > `allowInsecureAuth` lets the control UI authenticate over plain HTTP — safe because Tailscale Serve terminates HTTPS externally.
+   >
+   > `allowInsecureAuth` lets the control UI authenticate over plain HTTP — safe because it's only availale in your private tailnet.
 
 After step 5, all `make` commands (`make ssh`, `make deploy`, `make status`, etc.) connect via `openclaw-prod` on your tailnet — no IP to track down.
 
-> **Recovery:** If Tailscale fails, use the [Hetzner web console](https://console.hetzner.cloud/) for emergency TTY access to the server.
+> **Recovery:** If Tailscale fails, just delete the Firewall
 
 ### Remote State Backend
 
@@ -347,7 +354,7 @@ make push-config deploy
 
 ### Backup and Restore
 
-Backups run daily at 03:00 UTC via systemd timer.
+Backups run daily at 02:00 UTC via systemd timer.
 
 ```bash
 # Manual backup
@@ -365,14 +372,14 @@ make restore BACKUP=openclaw-backup-2026-02-08.tar.gz
 
 OpenClaw gateway runs on `127.0.0.1:18789` (localhost only) for security.
 
-**Via SSH tunnel:**
+**Access via SSH tunnel:**
 ```bash
 make tunnel  # Creates tunnel: localhost:18789 -> VPS:18789
 ```
 
 Then open `http://localhost:18789` in your browser. The gateway will ask for your **Gateway Token** — paste your `OPENCLAW_GATEWAY_TOKEN` value (from `secrets/openclaw.env`) into the settings field to authenticate.
 
-**Via Tailscale Serve** (if Tailscale is enabled):
+**Access via Tailscale Serve** (if Tailscale is enabled):
 ```bash
 ssh -i $SSH_KEY openclaw@<tailscale-ip>
 sudo tailscale serve --bg 18789
@@ -423,14 +430,25 @@ make deploy      # Restart
 
 ### Can't SSH to VPS
 
-If `ssh_allowed_cidrs` is not `[]`, verify your IP is still in the allowed range:
+**Check firewall rules:**
 ```bash
 grep TF_VAR_ssh_allowed_cidrs config/inputs.sh
+# Check actual firewall
+make ssh-root
+ufw status
 ```
 
-If `ssh_allowed_cidrs='[]'` (Tailscale-only mode), `make ssh` connects via the public IP and will time out — that's expected. SSH via your Tailscale IP instead:
+If `ssh_allowed_cidrs='[]'` (Tailscale-only mode), `make ssh` connects via the public IP and will time out, that's expected. SSH via your Tailscale IP instead:
 ```bash
 ssh -i $SSH_KEY openclaw@<tailscale-ip>
+```
+
+Or - as stated above - use the `SERVER_IP` variable to point `make ssh` at the Tailscale hostname:
+```bash
+# In config/inputs.sh
+export TF_VAR_ssh_allowed_cidrs='[]'
+export SERVER_IP="openclaw-prod"   # Tailscale MagicDNS — stable across rebuilds
+source config/inputs.sh && make plan && make apply
 ```
 
 Emergency access: [Hetzner web console](https://console.hetzner.cloud/) → server → Console.
@@ -504,7 +522,8 @@ See [SECURITY.md](SECURITY.md) for the full security policy and threat model.
 - Default allows SSH from anywhere (`0.0.0.0/0`) — restrict before production
 - **Option A:** Restrict to your IP via `TF_VAR_ssh_allowed_cidrs`
 - **Option B:** Enable Tailscale and set `ssh_allowed_cidrs='[]'` — zero public SSH exposure
-- Use SSH keys only (password auth is disabled by default on Hetzner Ubuntu images)
+- Use SSH keys, not passwords
+- Rotate keys regularly
 - See [Firewall Rules](#firewall-rules) for setup steps
 
 ### Secrets Management

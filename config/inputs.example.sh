@@ -76,9 +76,9 @@ export CLAUDE_SETUP_TOKEN=""
 # ============================================
 # Enable Tailscale for private networking. When enabled:
 # - Tailscale is installed on first boot via cloud-init
-# - UFW opens port 41641/udp for Tailscale traffic
-# - You can restrict ssh_allowed_cidrs to Tailscale IPs (100.64.0.0/10)
-#   for zero-public-exposure SSH
+# - UFW and Hetzner firewall open UDP 41641 for WireGuard
+# - Set ssh_allowed_cidrs='[]' to remove all public SSH exposure
+#   (SSH over Tailscale goes through WireGuard, not port 22)
 export TF_VAR_enable_tailscale=false
 
 # Tailscale auth key (generate at https://login.tailscale.com/admin/settings/keys)

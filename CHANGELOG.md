@@ -29,10 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `SECURITY.md` with Tailscale threat model improvements
 
 ### Documentation
-- New comprehensive Tailscale integration guide (`docs/TAILSCALE.md`)
-- Updated `README.md` with Tailscale quick start section
-- Enhanced `SECURITY.md` with Tailscale security considerations
-- Added Tailscale configuration example for OpenClaw gateway
+- Tailscale setup integrated into `README.md` (Firewall Rules section) and `SECURITY.md` (threat model)
+- Added Tailscale configuration example for OpenClaw gateway (`docs/examples/openclaw-tailscale.json`)
 
 ## [1.0.0] - 2025-02-08
 

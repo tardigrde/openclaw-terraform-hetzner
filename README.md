@@ -154,7 +154,6 @@ make restore    # Restore from backup (BACKUP=filename)
 make tailscale-status   # Check Tailscale status (uses public IP — run before closing port 22)
 make tailscale-ip       # Get Tailscale IP (uses public IP — run before closing port 22)
 make tailscale-up       # Manually authenticate Tailscale
-make tailscale-install  # Install Tailscale on an existing VPS (no cloud-init re-run needed)
 ```
 
 **Configuration:**
@@ -244,13 +243,6 @@ Tailscale creates a private WireGuard mesh so SSH is reachable only from devices
 After step 5, all `make` commands (`make ssh`, `make deploy`, `make status`, etc.) connect via `openclaw-prod` on your tailnet — no IP to track down.
 
 > **Recovery:** If Tailscale fails, use the [Hetzner web console](https://console.hetzner.cloud/) for emergency TTY access to the server.
-
-**Adding Tailscale to an existing deployment** (without re-provisioning):
-```bash
-make tailscale-install  # installs Tailscale and opens UFW 41641/udp
-make tailscale-status   # verify
-# Then follow steps 2–4 above to update Terraform state and lock down SSH
-```
 
 ### Remote State Backend
 
@@ -562,8 +554,7 @@ See [SECURITY.md](SECURITY.md) for the full security policy and threat model.
 ├── scripts/                  # Utility scripts
 │   ├── push-env.sh           # Push secrets to VPS
 │   ├── push-config.sh        # Push config to VPS
-│   ├── setup-auth.sh         # Setup subscription auth
-│   └── tailscale-install.sh  # Install Tailscale on existing VPS
+│   └── setup-auth.sh         # Setup subscription auth
 ├── config/
 │   └── inputs.example.sh     # Configuration template
 └── secrets/

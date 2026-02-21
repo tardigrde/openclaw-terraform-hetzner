@@ -83,10 +83,3 @@ variable "enable_tailscale" {
   type        = bool
   default     = false
 }
-
-variable "tailscale_auth_key" {
-  description = "Tailscale auth key for automatic registration (optional)"
-  type        = string
-  default     = ""
-  sensitive   = true
-}

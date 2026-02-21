@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - UFW firewall rule for Tailscale UDP port (41641)
   - Dynamic SSH port support throughout all scripts and Makefile
   - New Makefile targets: `tailscale-status`, `tailscale-ip`, `tailscale-up`
-  - Comprehensive documentation in `docs/TAILSCALE.md`
+  - Tailscale documentation integrated into `README.md` and `SECURITY.md`
 
 ### Changed
 - Cloud-init template updated with Tailscale installation logic

@@ -21,7 +21,7 @@ set -euo pipefail
 
 VPS_USER="openclaw"
 SSH_KEY="${SSH_KEY:-$HOME/.ssh/id_rsa}"
-SSH_OPTS="-o StrictHostKeyChecking=accept-new -i $SSH_KEY"
+SSH_OPTS=(-o StrictHostKeyChecking=accept-new -i "$SSH_KEY")
 TERRAFORM_DIR="infra/terraform/envs/prod"
 
 # -----------------------------------------------------------------------------
@@ -59,7 +59,7 @@ echo ""
 # Check status on VPS
 # -----------------------------------------------------------------------------
 
-ssh $SSH_OPTS "$VPS_USER@$VPS_IP" bash -s << 'REMOTE_SCRIPT'
+ssh "${SSH_OPTS[@]}" "$VPS_USER@$VPS_IP" bash -s << 'REMOTE_SCRIPT'
 
 # Colors
 G='\033[0;32m'
@@ -151,21 +151,18 @@ if command -v tailscale &> /dev/null; then
     echo -e "${BOLD}Tailscale${NC}"
     echo ""
 
-    if sudo tailscale status --json &> /dev/null; then
-        # Tailscale is running
-        TS_IP=$(tailscale ip -4 2>/dev/null || echo "N/A")
-        TS_STATUS=$(sudo tailscale status --peers=false 2>/dev/null | head -1 | awk '{print $NF}' || echo "unknown")
+    TS_STATE=$(sudo tailscale status --json 2>/dev/null | jq -r '.BackendState' 2>/dev/null || echo "unknown")
+    TS_IP=$(tailscale ip -4 2>/dev/null || echo "N/A")
 
-        if [ "$TS_STATUS" = "active" ] || echo "$TS_STATUS" | grep -q "logged in"; then
-            echo -e "  ${G}Status:${NC}  Connected"
-            echo -e "  ${G}IP:${NC}      $TS_IP"
-        else
-            echo -e "  ${Y}Status:${NC}  $TS_STATUS"
-            echo -e "  ${DIM}IP:      $TS_IP${NC}"
-        fi
-    else
+    if [ "$TS_STATE" = "Running" ]; then
+        echo -e "  ${G}Status:${NC}  Connected"
+        echo -e "  ${G}IP:${NC}      $TS_IP"
+    elif [ "$TS_STATE" = "NeedsLogin" ]; then
         echo -e "  ${Y}Status:${NC}  Not authenticated"
         echo -e "  ${DIM}Run 'sudo tailscale up' to authenticate${NC}"
+    else
+        echo -e "  ${Y}Status:${NC}  $TS_STATE"
+        echo -e "  ${DIM}IP:      $TS_IP${NC}"
     fi
 fi
 

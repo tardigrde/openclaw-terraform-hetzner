@@ -75,6 +75,8 @@ runcmd:
   # Install Tailscale VPN
   # -----------------------------------------------------------------------------
   - curl -fsSL https://tailscale.com/install.sh | sh
+  - systemctl enable --now tailscaled
+  - sleep 2
 
 %{ if tailscale_auth_key != "" ~}
   # Authenticate Tailscale automatically

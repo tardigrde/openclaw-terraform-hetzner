@@ -6,7 +6,7 @@
 SHELL := /bin/bash
 .PHONY: init plan apply destroy ssh ssh-root tunnel output ip fmt validate clean help \
         bootstrap deploy push-env push-config setup-auth backup-now restore logs status \
-        tailscale-status tailscale-ip tailscale-up tailscale-install \
+        tailscale-status tailscale-ip tailscale-up \
         workspace-sync
 
 # Default target
@@ -140,16 +140,12 @@ status: ## Check OpenClaw status on the VPS (includes Tailscale if enabled)
 
 workspace-sync: ## Sync workspace to GitHub now
 	@echo -e "$(GREEN)[INFO]$(NC) Syncing workspace on $(SERVER_IP)..."
-	ssh -o StrictHostKeyChecking=accept-new openclaw@$(SERVER_IP) \
+	ssh -i $(SSH_KEY) -o StrictHostKeyChecking=accept-new openclaw@$(SERVER_IP) \
 		'cd ~/openclaw && docker compose exec workspace-sync workspace-sync.sh'
 
 # =============================================================================
 # Tailscale Commands
 # =============================================================================
-
-tailscale-install: ## Install Tailscale on the running VPS and authenticate
-	@echo -e "$(BLUE)[DEPLOY]$(NC) Installing Tailscale on VPS..."
-	@./scripts/tailscale-install.sh $(SERVER_IP)
 
 tailscale-status: ## Show detailed Tailscale status and peers
 	@echo -e "$(GREEN)[INFO]$(NC) Checking Tailscale status..."
@@ -199,7 +195,6 @@ help: ## Show this help message
 	@echo -e "  $(GREEN)ip$(NC)              Show server IP"
 	@echo ""
 	@echo -e "$(BOLD)Tailscale:$(NC)"
-	@echo -e "  $(GREEN)tailscale-install$(NC) Install Tailscale on the running VPS"
 	@echo -e "  $(GREEN)tailscale-status$(NC)  Show Tailscale status and peers"
 	@echo -e "  $(GREEN)tailscale-ip$(NC)      Get Tailscale IP address"
 	@echo -e "  $(GREEN)tailscale-up$(NC)      Manually authenticate Tailscale"

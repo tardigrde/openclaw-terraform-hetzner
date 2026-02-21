@@ -67,8 +67,7 @@ module "vps" {
   app_directory       = var.app_directory
 
   # Security configuration
-  enable_tailscale   = var.enable_tailscale
-  tailscale_auth_key = var.tailscale_auth_key
+  enable_tailscale = var.enable_tailscale
 
   cloud_init_user_data = templatefile("${path.module}/../../../cloud-init/user-data.yml.tpl", {
     app_user           = var.app_user

@@ -138,6 +138,11 @@ status: ## Check OpenClaw status on the VPS (includes Tailscale if enabled)
 	@echo -e "$(GREEN)[INFO]$(NC) Checking VPS status..."
 	@./deploy/status.sh $(SERVER_IP)
 
+workspace-sync: ## Sync workspace to GitHub now
+	@echo -e "$(GREEN)[INFO]$(NC) Syncing workspace on $(SERVER_IP)..."
+	ssh -o StrictHostKeyChecking=accept-new openclaw@$(SERVER_IP) \
+		'cd ~/openclaw && docker compose exec workspace-sync workspace-sync.sh'
+
 # =============================================================================
 # Tailscale Commands
 # =============================================================================
@@ -156,12 +161,6 @@ tailscale-ip: ## Get Tailscale IP address
 tailscale-up: ## Manually authenticate Tailscale
 	@echo -e "$(GREEN)[INFO]$(NC) Authenticating Tailscale..."
 	@ssh -i $(SSH_KEY) -t openclaw@$(SERVER_IP) 'sudo tailscale up'
-
-workspace-sync: ## Sync workspace to GitHub now
-	@echo -e "$(GREEN)[INFO]$(NC) Syncing workspace on $(SERVER_IP)..."
-	ssh -o StrictHostKeyChecking=accept-new openclaw@$(SERVER_IP) \
-		'cd ~/openclaw && docker compose exec workspace-sync workspace-sync.sh'
-
 
 # =============================================================================
 # Help

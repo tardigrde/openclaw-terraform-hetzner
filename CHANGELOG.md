@@ -15,7 +15,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Dynamic SSH port support throughout all scripts and Makefile
   - New Makefile targets: `tailscale-status`, `tailscale-ip`, `tailscale-up`
   - Comprehensive documentation in `docs/TAILSCALE.md`
-  - OpenClaw Tailscale configuration example (`docs/examples/openclaw-tailscale.json`)
 
 ### Changed
 - Cloud-init template updated with Tailscale installation logic
@@ -30,7 +29,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Documentation
 - Tailscale setup integrated into `README.md` (Firewall Rules section) and `SECURITY.md` (threat model)
-- Added Tailscale configuration example for OpenClaw gateway (`docs/examples/openclaw-tailscale.json`)
 
 ## [1.0.0] - 2025-02-08
 

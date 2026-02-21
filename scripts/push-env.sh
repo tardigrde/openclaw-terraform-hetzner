@@ -18,11 +18,10 @@ set -euo pipefail
 # -----------------------------------------------------------------------------
 
 VPS_USER="openclaw"
-TERRAFORM_DIR="infra/terraform/envs/prod"
-ENV_FILE="secrets/openclaw.env"
-
 SSH_KEY="${SSH_KEY:-$HOME/.ssh/id_rsa}"
 SSH_OPTS="-o StrictHostKeyChecking=accept-new -i $SSH_KEY"
+TERRAFORM_DIR="infra/terraform/envs/prod"
+ENV_FILE="secrets/openclaw.env"
 REMOTE_PATH="/home/openclaw/openclaw/.env"
 
 # Required variables that must be non-empty

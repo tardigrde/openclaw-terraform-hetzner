@@ -12,8 +12,9 @@
 set -euo pipefail
 
 VPS_USER="openclaw"
-TERRAFORM_DIR="infra/terraform/envs/prod"
 SSH_KEY="${SSH_KEY:-$HOME/.ssh/id_rsa}"
+SSH_OPTS="-o StrictHostKeyChecking=accept-new -i $SSH_KEY"
+TERRAFORM_DIR="infra/terraform/envs/prod"
 
 if [[ -n "${1:-}" ]]; then
     VPS_IP="$1"
@@ -24,8 +25,6 @@ else
         exit 1
     }
 fi
-
-SSH_OPTS="-o StrictHostKeyChecking=accept-new -i $SSH_KEY"
 
 echo "=== Install Tailscale ==="
 echo "Server: $VPS_IP"

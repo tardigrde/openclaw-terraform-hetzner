@@ -20,8 +20,7 @@ set -euo pipefail
 # -----------------------------------------------------------------------------
 
 VPS_USER="openclaw"
-SSH_KEY="${SSH_KEY:-$HOME/.ssh/id_rsa}"
-SSH_OPTS=(-o StrictHostKeyChecking=accept-new -i "$SSH_KEY")
+SSH_OPTS="-o StrictHostKeyChecking=accept-new"
 TERRAFORM_DIR="infra/terraform/envs/prod"
 
 # -----------------------------------------------------------------------------
@@ -59,7 +58,7 @@ echo ""
 # Check status on VPS
 # -----------------------------------------------------------------------------
 
-ssh "${SSH_OPTS[@]}" "$VPS_USER@$VPS_IP" bash -s << 'REMOTE_SCRIPT'
+ssh $SSH_OPTS "$VPS_USER@$VPS_IP" bash -s << 'REMOTE_SCRIPT'
 
 # Colors
 G='\033[0;32m'

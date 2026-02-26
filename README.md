@@ -23,10 +23,7 @@ For information about OpenClaw itself, see the [OpenClaw documentation](https://
 1. **Terraform** >= 1.5 ([Installation Guide](https://developer.hashicorp.com/terraform/install))
 2. **Hetzner Cloud Account** with API token ([Console](https://console.hetzner.cloud/))
 3. **Hetzner Object Storage** for Terraform state (optional but recommended)
-4. **SSH Key** at `~/.ssh/id_rsa` (default, configurable via `SSH_KEY` environment variable)
-   - The private key (`~/.ssh/id_rsa`) is required for SSH connections
-   - The public key (`~/.ssh/id_rsa.pub`) must be uploaded to Hetzner Cloud
-   - To use a different key, set `SSH_KEY` in your environment: `export SSH_KEY=~/.ssh/custom_key`
+4. **SSH Key** at `~/.ssh/id_rsa.pub`
 5. **Docker configuration repo**: [openclaw-docker-config](https://github.com/andreesg/openclaw-docker-config)
 
 ## Quick Start
@@ -212,7 +209,7 @@ Tailscale creates a private WireGuard mesh so SSH is reachable only from devices
    source config/inputs.sh && make plan && make apply
    make tailscale-status          # confirm node is connected
    make tailscale-ip              # note your Tailscale IP
-   ssh -i $SSH_KEY openclaw@<tailscale-ip>  # confirm Tailscale SSH works
+   ssh openclaw@<tailscale-ip>  # confirm Tailscale SSH works
    ```
 
 4. Remove public SSH and point scripts at the Tailscale hostname:
@@ -249,7 +246,9 @@ Tailscale creates a private WireGuard mesh so SSH is reachable only from devices
 
 After step 5, all `make` commands (`make ssh`, `make deploy`, `make status`, etc.) connect via `openclaw-prod` on your tailnet — no IP to track down.
 
-> **Recovery:** If Tailscale fails, just delete the Firewall
+> **Recovery:** If Tailscale fails to connect, check status with `make tailscale-status`. 
+> For persistent issues, you can delete the Hetzner Cloud Firewall via the console or re-run 
+> `make apply` after fixing the configuration.
 
 ### Remote State Backend
 
@@ -381,7 +380,7 @@ Then open `http://localhost:18789` in your browser. The gateway will ask for you
 
 **Access via Tailscale Serve** (if Tailscale is enabled):
 ```bash
-ssh -i $SSH_KEY openclaw@<tailscale-ip>
+ssh openclaw@<tailscale-ip>
 sudo tailscale serve --bg 18789
 sudo tailscale serve status  # prints your HTTPS URL
 ```
@@ -440,7 +439,7 @@ ufw status
 
 If `ssh_allowed_cidrs='[]'` (Tailscale-only mode), `make ssh` connects via the public IP and will time out, that's expected. SSH via your Tailscale IP instead:
 ```bash
-ssh -i $SSH_KEY openclaw@<tailscale-ip>
+ssh openclaw@<tailscale-ip>
 ```
 
 Or - as stated above - use the `SERVER_IP` variable to point `make ssh` at the Tailscale hostname:

@@ -139,5 +139,6 @@ done < <(docker compose ps --format '{{.Name}}\t{{.Status}}' 2>/dev/null)
 
 echo ""
 echo -e "${G}Deploy complete${NC}"
+echo ""
 
 REMOTE_SCRIPT
